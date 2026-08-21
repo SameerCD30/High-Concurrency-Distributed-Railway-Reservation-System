@@ -1,4 +1,4 @@
-package com.Sameer.railway_api_spring_boot.service;
+package com.Sameer.railway_api_spring_boot.Service;
 
 import com.Sameer.railway_api_spring_boot.dto.TrainSearchResult;
 import com.Sameer.railway_api_spring_boot.entity.Train;
