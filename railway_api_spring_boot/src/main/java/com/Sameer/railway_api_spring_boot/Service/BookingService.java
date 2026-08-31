@@ -51,7 +51,7 @@ public class BookingService {
             List<Seat> seats = seatRepo.findByCoachIdOrderBySeatNumberAsc(coach.getId());
             for (Seat seat : seats) {
                 List<PassengerBooking> overlaps =
-                        passengerBookingRepo.findOverlappingBookings(seat.getId(), boardSeq, deboardSeq);
+                        passengerBookingRepo.findOverlappingBookings(seat.getId(), instance.getId(), boardSeq, deboardSeq);
                 if (overlaps.isEmpty()) {
                     availableSeat = seat;
                     break outer;   // stop at the first free seat we find
