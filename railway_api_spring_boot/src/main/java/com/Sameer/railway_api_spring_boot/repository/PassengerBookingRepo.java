@@ -9,14 +9,16 @@ import java.util.List;
 public interface PassengerBookingRepo extends JpaRepository<PassengerBooking, Long> {
 
     @Query("""
-        SELECT pb FROM PassengerBooking pb
-        WHERE pb.seat.id = :seatId
-          AND pb.status = 'CONFIRMED'
-          AND pb.boardSeq < :deboardSeq
-          AND :boardSeq < pb.deboardSeq
-        """)
+    SELECT pb FROM PassengerBooking pb
+    WHERE pb.seat.id = :seatId
+      AND pb.booking.trainInstance.id = :trainInstanceId
+      AND pb.status = 'CONFIRMED'
+      AND pb.boardSeq < :deboardSeq
+      AND :boardSeq < pb.deboardSeq
+    """)
     List<PassengerBooking> findOverlappingBookings(
             @Param("seatId") Long seatId,
+            @Param("trainInstanceId") Long trainInstanceId,
             @Param("boardSeq") Integer boardSeq,
             @Param("deboardSeq") Integer deboardSeq
     );
