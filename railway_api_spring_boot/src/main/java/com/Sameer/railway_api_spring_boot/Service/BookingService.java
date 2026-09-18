@@ -25,7 +25,7 @@ public class BookingService {
     @Transactional
     public BookingResponse createBooking(BookingRequest req) {
 
-        // Step 1: get or create the train_instance for this date
+        //create the train_instance for this date
         TrainInstance instance = trainInstanceRepo
                 .findByTrainIdAndJourneyDate(req.getTrainId(), req.getJourneyDate())
                 .orElseGet(() -> {
@@ -36,13 +36,13 @@ public class BookingService {
                     return trainInstanceRepo.save(ti);
                 });
 
-        // Step 2: find board/deboard sequence numbers from train_routes
+        //board/deboard sequence numbers from train_routes
         TrainRoute fromRoute = trainRouteRepo.findByTrainIdAndStationId(req.getTrainId(), req.getFromStationId());
         TrainRoute toRoute = trainRouteRepo.findByTrainIdAndStationId(req.getTrainId(), req.getToStationId());
         int boardSeq = fromRoute.getSequenceNo();
         int deboardSeq = toRoute.getSequenceNo();
 
-        // Step 3: get all seats in the requested class for this train
+        //get all seats in the requested class for this train
         List<Coach> coaches = coachRepo.findByTrainIdAndClassType(req.getTrainId(), req.getClassType());
 
         Seat availableSeat = null;
@@ -50,23 +50,24 @@ public class BookingService {
         for (Coach coach : coaches) {
             List<Seat> seats = seatRepo.findByCoachIdOrderBySeatNumberAsc(coach.getId());
             for (Seat seat : seats) {
+                Seat lockedSeat = seatRepo.findByIdForUpdate(seat.getId());   // acquire lock first
                 List<PassengerBooking> overlaps =
-                        passengerBookingRepo.findOverlappingBookings(seat.getId(), instance.getId(), boardSeq, deboardSeq);
+                        passengerBookingRepo.findOverlappingBookings(lockedSeat.getId(), instance.getId(), boardSeq, deboardSeq);
                 if (overlaps.isEmpty()) {
-                    availableSeat = seat;
-                    break outer;   // stop at the first free seat we find
+                    availableSeat = lockedSeat;
+                    break outer;
                 }
             }
         }
 
-        // Step 4: create the booking record
+        //create the booking record
         Booking booking = new Booking();
         booking.setPnr(generatePnr());
         booking.setTrainInstance(instance);
         booking.setStatus(availableSeat != null ? "CONFIRMED" : "WAITLISTED");
         booking = bookingRepo.save(booking);
 
-        // Step 5: create the passenger_booking record
+        //create the passenger_booking record
         PassengerBooking pb = new PassengerBooking();
         pb.setBooking(booking);
         pb.setSeat(availableSeat);   // null if waitlisted
@@ -77,7 +78,7 @@ public class BookingService {
         pb.setStatus(availableSeat != null ? "CONFIRMED" : "WAITLIST");
         passengerBookingRepo.save(pb);
 
-        // Step 6: build response
+        // build response
         return new BookingResponse(
                 booking.getPnr(),
                 booking.getStatus(),
