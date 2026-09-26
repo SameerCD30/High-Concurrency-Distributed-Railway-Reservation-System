@@ -7,6 +7,8 @@ import com.Sameer.railway_api_spring_boot.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.util.List;
 import java.util.UUID;
@@ -21,6 +23,7 @@ public class BookingService {
     private final SeatRepo seatRepo;
     private final BookingRepo bookingRepo;
     private final PassengerBookingRepo passengerBookingRepo;
+    private final AvailabilityService availabilityService;
 
     @Transactional
     public BookingResponse createBooking(BookingRequest req) {
@@ -76,7 +79,15 @@ public class BookingService {
         pb.setBoardSeq(boardSeq);
         pb.setDeboardSeq(deboardSeq);
         pb.setStatus(availableSeat != null ? "CONFIRMED" : "WAITLIST");
-        passengerBookingRepo.save(pb);
+        passengerBookingRepo.save(pb);        // Clear cached availability, but only AFTER the booking is committed to Postgres
+        if (availableSeat != null) {
+            TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+                @Override
+                public void afterCommit() {
+                    availabilityService.evict(req.getTrainId(), req.getJourneyDate(), req.getClassType());
+                }
+            });
+        }
 
         // build response
         return new BookingResponse(

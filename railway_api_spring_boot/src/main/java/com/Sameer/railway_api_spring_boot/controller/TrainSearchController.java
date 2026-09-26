@@ -3,8 +3,10 @@ package com.Sameer.railway_api_spring_boot.controller;
 import com.Sameer.railway_api_spring_boot.dto.TrainSearchResult;
 import com.Sameer.railway_api_spring_boot.Service.TrainSearchService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -17,7 +19,8 @@ public class TrainSearchController {
     @GetMapping
     public List<TrainSearchResult> search(
             @RequestParam Long fromStationId,
-            @RequestParam Long toStationId){
-        return trainSearchService.searchTrains(fromStationId, toStationId);
+            @RequestParam Long toStationId,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate journeyDate) {
+        return trainSearchService.searchTrains(fromStationId, toStationId, journeyDate);
     }
 }
