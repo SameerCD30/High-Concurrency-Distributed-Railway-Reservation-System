@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -18,14 +19,20 @@ public class AvailabilityService {
 
     private final StringRedisTemplate redis;
     private final SeatRepo seatRepo;
+    private final boolean cacheEnabled;
 
-    public AvailabilityService(StringRedisTemplate redis, SeatRepo seatRepo) {
+    public AvailabilityService(StringRedisTemplate redis, SeatRepo seatRepo,
+                               @Value("${availability.cache.enabled:true}") boolean cacheEnabled) {
         this.redis = redis;
         this.seatRepo = seatRepo;
+        this.cacheEnabled = cacheEnabled;
     }
 
     public long getAvailableSeats(Long trainId, LocalDate journeyDate, String classType,
                                   int boardSeq, int deboardSeq) {
+        if (!cacheEnabled) {
+            return seatRepo.countAvailableSeats(trainId, journeyDate, classType, boardSeq, deboardSeq);
+        }
         String key = cacheKey(trainId, journeyDate, classType);
         String field = boardSeq + "-" + deboardSeq;
 

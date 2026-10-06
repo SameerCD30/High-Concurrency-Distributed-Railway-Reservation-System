@@ -23,8 +23,9 @@ public class Booking {
     @JoinColumn(name = "train_instance_id", nullable = false)
     private TrainInstance trainInstance;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String status = "PENDING";
+    private BookingStatus status = BookingStatus.PENDING;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();

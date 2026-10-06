@@ -32,6 +32,7 @@ public class PassengerBooking {
     @Column(name = "deboard_seq", nullable = false)
     private Integer deboardSeq;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String status = "CONFIRMED";
+    private BookingStatus status = BookingStatus.CONFIRMED;
 }

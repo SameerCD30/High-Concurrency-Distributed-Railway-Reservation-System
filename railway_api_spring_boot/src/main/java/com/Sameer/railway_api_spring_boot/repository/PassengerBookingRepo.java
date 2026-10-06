@@ -12,7 +12,7 @@ public interface PassengerBookingRepo extends JpaRepository<PassengerBooking, Lo
     SELECT pb FROM PassengerBooking pb
     WHERE pb.seat.id = :seatId
       AND pb.booking.trainInstance.id = :trainInstanceId
-      AND pb.status = 'CONFIRMED'
+            AND pb.status = com.Sameer.railway_api_spring_boot.entity.BookingStatus.CONFIRMED
       AND pb.boardSeq < :deboardSeq
       AND :boardSeq < pb.deboardSeq
     """)

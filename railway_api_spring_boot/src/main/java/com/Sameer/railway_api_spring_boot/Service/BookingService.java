@@ -29,14 +29,14 @@ public class BookingService {
     public BookingResponse createBooking(BookingRequest req) {
 
         //create the train_instance for this date
+        // 1. Get the train_instance for this date, creating it safely if it doesn't exist yet
         TrainInstance instance = trainInstanceRepo
                 .findByTrainIdAndJourneyDate(req.getTrainId(), req.getJourneyDate())
                 .orElseGet(() -> {
-                    TrainInstance ti = new TrainInstance();
-                    ti.setTrain(new Train(req.getTrainId(), null, null, null)); // just need the id reference
-                    ti.setJourneyDate(req.getJourneyDate());
-                    ti.setStatus("OPEN");
-                    return trainInstanceRepo.save(ti);
+                    trainInstanceRepo.insertIfAbsent(req.getTrainId(), req.getJourneyDate());
+                    return trainInstanceRepo
+                            .findByTrainIdAndJourneyDate(req.getTrainId(), req.getJourneyDate())
+                            .orElseThrow();
                 });
 
         //board/deboard sequence numbers from train_routes
@@ -67,7 +67,7 @@ public class BookingService {
         Booking booking = new Booking();
         booking.setPnr(generatePnr());
         booking.setTrainInstance(instance);
-        booking.setStatus(availableSeat != null ? "CONFIRMED" : "WAITLISTED");
+        booking.setStatus(availableSeat != null ? BookingStatus.CONFIRMED : BookingStatus.WAITLISTED);
         booking = bookingRepo.save(booking);
 
         //create the passenger_booking record
@@ -78,7 +78,7 @@ public class BookingService {
         pb.setPassengerAge(req.getPassengerAge());
         pb.setBoardSeq(boardSeq);
         pb.setDeboardSeq(deboardSeq);
-        pb.setStatus(availableSeat != null ? "CONFIRMED" : "WAITLIST");
+        pb.setStatus(availableSeat != null ? BookingStatus.CONFIRMED : BookingStatus.WAITLISTED);
         passengerBookingRepo.save(pb);        // Clear cached availability, but only AFTER the booking is committed to Postgres
         if (availableSeat != null) {
             TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
@@ -92,7 +92,7 @@ public class BookingService {
         // build response
         return new BookingResponse(
                 booking.getPnr(),
-                booking.getStatus(),
+                booking.getStatus().name(),
                 availableSeat != null ? String.valueOf(availableSeat.getSeatNumber()) : null,
                 availableSeat != null ? availableSeat.getCoach().getCoachNumber() : null
         );
