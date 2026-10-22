@@ -1,0 +1,265 @@
+/* Header */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  background: rgba(247, 242, 232, 0.88);
+  backdrop-filter: blur(18px);
+  border-bottom: 1px solid rgba(205, 193, 170, 0.55);
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  height: 74px;
+}
+
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.logo-mark svg {
+  width: 38px;
+  height: 38px;
+}
+
+.logo-mark-bg {
+  fill: var(--ink);
+}
+
+.logo-rail {
+  stroke: var(--cream);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.logo-sleeper {
+  stroke: var(--amber);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+}
+
+.logo-dot {
+  fill: var(--amber);
+}
+
+.logo-word {
+  position: relative;
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.logo-tag {
+  margin-left: 6px;
+  font-family: var(--font-body);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--amber-deep);
+  vertical-align: super;
+}
+
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.nav-link {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--muted);
+  transition: color 0.18s ease;
+}
+
+.nav-link:hover {
+  color: var(--ink);
+}
+
+.nav-link.is-active {
+  color: var(--ink);
+}
+
+.nav-link.is-active::after {
+  content: '';
+  display: block;
+  height: 2px;
+  margin-top: 4px;
+  border-radius: 2px;
+  background: var(--amber);
+}
+
+.header-cta {
+  margin-left: 4px;
+}
+
+.menu-toggle {
+  display: none;
+}
+
+/* Demo banner */
+.demo-banner {
+  position: relative;
+  z-index: 70;
+  background: linear-gradient(90deg, #0c2b31, #123c3f);
+  color: #f4e8d5;
+  font-size: 12.5px;
+}
+
+.demo-banner-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 8px 0;
+}
+
+.demo-banner-copy {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.demo-banner-copy strong {
+  color: var(--amber-bright);
+}
+
+.demo-banner-copy span {
+  opacity: 0.78;
+}
+
+.demo-detail-short {
+  display: none;
+}
+
+.demo-retry {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  white-space: nowrap;
+  border: 1px solid rgba(244, 232, 213, 0.32);
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  padding: 6px 11px;
+  font-size: 11.5px;
+  font-weight: 700;
+}
+
+.demo-retry:hover {
+  background: rgba(244, 232, 213, 0.12);
+}
+
+/* Footer */
+.site-footer {
+  background: var(--ink-deep);
+  color: #e7e0d0;
+  padding: 72px 0 22px;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.6fr 0.8fr 0.8fr 1.2fr;
+  gap: 44px;
+  padding-bottom: 48px;
+  border-bottom: 1px solid rgba(231, 224, 208, 0.14);
+}
+
+.site-footer .logo-word {
+  color: var(--cream);
+}
+
+.site-footer .logo-mark-bg {
+  fill: rgba(231, 224, 208, 0.14);
+}
+
+.footer-brand p {
+  margin: 18px 0;
+  max-width: 340px;
+  font-size: 13px;
+  line-height: 1.65;
+  color: rgba(231, 224, 208, 0.65);
+}
+
+.tech-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tech-pills span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 1px solid rgba(231, 224, 208, 0.16);
+  border-radius: 999px;
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+  color: rgba(231, 224, 208, 0.8);
+}
+
+.footer-column {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.footer-column h3 {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 6px;
+}
+
+.footer-column a {
+  font-size: 13px;
+  color: rgba(231, 224, 208, 0.72);
+}
+
+.footer-column a:hover {
+  color: var(--amber-bright);
+}
+
+.footer-note p {
+  font-size: 12px;
+  line-height: 1.6;
+  color: rgba(231, 224, 208, 0.6);
+}
+
+.footer-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12.5px !important;
+  color: var(--amber-bright) !important;
+}
+
+.footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+  padding-top: 20px;
+  font-size: 11.5px;
+  color: rgba(231, 224, 208, 0.45);
+}
+
+.footer-mono {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.28em;
+}
